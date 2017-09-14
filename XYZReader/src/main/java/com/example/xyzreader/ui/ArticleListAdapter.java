@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -69,11 +68,13 @@ public class ArticleListAdapter extends CursorRecyclerViewAdapter<ArticleListAda
 
                     @Override
                     public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+
                         Bitmap bitmap = ((BitmapDrawable) resource.getCurrent()).getBitmap();
                         Palette palette = Palette.generate(bitmap);
                         int defaultColor = 0xFF333333;
                         int color = palette.getDarkMutedColor(defaultColor);
                         holder.itemView.setBackgroundColor(color);
+
                         return false;
                     }
                 })

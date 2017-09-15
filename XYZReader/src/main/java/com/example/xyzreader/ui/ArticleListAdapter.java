@@ -4,9 +4,6 @@ package com.example.xyzreader.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.DateUtils;
@@ -16,8 +13,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.load.resource.bitmap.GlideBitmapDrawable;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.xyzreader.R;
@@ -60,25 +57,24 @@ public class ArticleListAdapter extends CursorRecyclerViewAdapter<ArticleListAda
         holder.thumbnailView.setAspectRatio(cursor.getFloat(ArticleLoader.Query.ASPECT_RATIO));
         Glide.with(holder.thumbnailView.getContext())
                 .load(cursor.getString(ArticleLoader.Query.THUMB_URL))
-                .listener(new RequestListener<Drawable>() {
+                .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
                         return false;
                     }
 
                     @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-
-                        Bitmap bitmap = ((BitmapDrawable) resource.getCurrent()).getBitmap();
+                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        Bitmap bitmap = ((GlideBitmapDrawable) resource.getCurrent()).getBitmap();
                         Palette palette = Palette.generate(bitmap);
                         int defaultColor = 0xFF333333;
                         int color = palette.getDarkMutedColor(defaultColor);
                         holder.itemView.setBackgroundColor(color);
-
                         return false;
                     }
                 })
                 .into(holder.thumbnailView);
+
     }
 
     @Override
